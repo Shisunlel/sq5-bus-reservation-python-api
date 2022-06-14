@@ -20,7 +20,7 @@ async def read_root():
 @app.get("/users")
 async def get_all_user():
     try:
-        cur.execute("select * from pro_user")
+        cur.execute("select * from users")
         result = cur.fetchall()
         return { "data" : result }
     except Exception as e:
