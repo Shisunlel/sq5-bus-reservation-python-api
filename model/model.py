@@ -1,4 +1,5 @@
 from lib2to3.pytree import Base
+from typing import Optional
 from pydantic import BaseModel
 
 class RegisterModel(BaseModel):
@@ -8,7 +9,7 @@ class RegisterModel(BaseModel):
 
 
 class ApiResponse(BaseModel):
-    data: None
+    data: Optional[object]
     is_success: bool
     message: str
 
@@ -18,9 +19,9 @@ class UserModel(BaseModel):
     user_pass: str
     first_name: str
     last_name: str
-    date_of_birth: str | None
+    date_of_birth: Optional[str]
     user_desc: str
-    phone: str | None
+    phone: Optional[str]
     email: str
     created_date: str
     status: int
