@@ -3,6 +3,7 @@ from psycopg2 import connect, extras
 from dotenv import dotenv_values
 import os
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 config = dotenv_values(".env")
 database = config['DATABASE'] if config else os.environ.get('DATABASE')
@@ -11,6 +12,14 @@ password = config['PASSWORD'] if config else os.environ.get('PASSWORD')
 host = config['HOST'] if config else os.environ.get('HOST')
 
 app = FastAPI()
+origins = ['*']
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 conn = connect(database=database, user=user, password=password, host=host)
 cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
@@ -54,7 +63,7 @@ async def get_locations():
 async def get_user(user_name: str):
     try:
         cur.execute(
-            "SELECT first_name, last_name, phone, email, date_of_birth FROM users WHERE user_name = %s", (user_name,))
+            "SELECT first_name, last_name, phone, email, date_of_birth, user_name, user_pass, user_desc FROM users WHERE user_name = %s", (user_name,))
         result = cur.fetchone()
         return {"data": {
             "user": result,
