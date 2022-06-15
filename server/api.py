@@ -67,12 +67,20 @@ async def get_user(user_name: str):
 @app.post("/register")
 async def register(req: RegisterModel):
     try:
-        cur.execute("insert into users (user_id, user_name, user_pass, email) values (%s, %s, %s)",
-                    (req.user_name, req.user_pass, req.email,))
+        is_success = True
+        message = 'success'
+        sql = "insert into users (user_name, user_pass, email)  values (%s, %s, %s)"
+        data = [req.user_name, req.user_pass, req.email,]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
         return {
             "data": None,
-            "is_success": True,
-            "message": "success"
+            "is_success": is_success,
+            "message": message
         }
     except Exception as e:
         print('ERR: ', e.args[0])
