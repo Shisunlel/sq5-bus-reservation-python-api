@@ -1,4 +1,6 @@
+from datetime import date
 from lib2to3.pytree import Base
+from re import I
 from typing import Optional
 from pydantic import BaseModel
 
@@ -53,3 +55,14 @@ class UpdateInfoRequest(BaseModel):
     phone: str
     email: str
     date_of_birth: str
+
+class AddBusRequest(BaseModel):
+    name: str
+    price: float
+    type_id: int
+    created_date: date
+
+class UpdateBusRequest(BaseModel):
+    bus_id: int
+    price: float
+    status: int
