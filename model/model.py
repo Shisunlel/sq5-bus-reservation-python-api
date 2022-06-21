@@ -16,17 +16,17 @@ class ApiResponse(BaseModel):
     message: str
 
 class UserModel(BaseModel):
-    user_id: int
+    user_id: Optional[int]
     user_name: str
     user_pass: str
-    first_name: str
-    last_name: str
-    date_of_birth: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    date_of_birth: Optional[date]
     user_desc: str
     phone: Optional[str]
     email: str
-    created_date: str
-    status: int
+    created_date: Optional[date]
+    status: Optional[int]
 
 class UsersModelData(BaseModel):
     users: list[UserModel]
