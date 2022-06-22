@@ -34,6 +34,22 @@ class UsersModelData(BaseModel):
 class UsersResponse(ApiResponse):
     data: UsersModelData
 
+class UserModelForDashboard(BaseModel):
+    user_id: Optional[int]
+    user_name: str
+    user_pass: str
+    first_name: Optional[str]
+    last_name: Optional[str]
+    date_of_birth: Optional[date]
+    email: str
+    phone: Optional[str]
+    user_desc: str
+    status: Optional[int]
+class UsersModelDataForDashboard(BaseModel):
+    users: list[UserModelForDashboard]
+class UsersResponseForDashboard(ApiResponse):
+    data: UserModelForDashboard
+
 class UserModelData(BaseModel):
     user: UserModel
 

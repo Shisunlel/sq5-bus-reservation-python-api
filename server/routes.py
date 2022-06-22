@@ -28,10 +28,10 @@ async def get_all_user():
     except Exception as e:
         print('ERR: ', e.args[0])
 
-@router.get("/get-users-for-dashboard", response_model=UsersResponse)
+@router.get("/get-users-for-dashboard", response_model=UsersResponseForDashboard)
 async def get_dashboard_users():
     try:
-        cur.execute("SELECT user_id, user_name, user_pass, first_name, last_name, date_of_birth, email, phone, user_desc, status FROM users")
+        cur.execute("select * from users")
         result = cur.fetchall()
         return {"data": {
             "users": result, },
