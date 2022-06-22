@@ -28,6 +28,18 @@ async def get_all_user():
     except Exception as e:
         print('ERR: ', e.args[0])
 
+@router.get("/get-users-for-dashboard", response_model=UsersResponse)
+async def get_dashboard_users():
+    try:
+        cur.execute("SELECT user_id, user_name, user_pass, first_name, last_name, date_of_birth, email, phone, user_desc, status FROM users")
+        result = cur.fetchall()
+        return {"data": {
+            "users": result, },
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
 
 @router.get("/get-locations", response_model=LocationResponse)
 async def get_locations():
