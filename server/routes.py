@@ -136,7 +136,7 @@ async def update_info(req: UpdateInfoRequest):
 @router.get("/get-trips", response_model=TripResponse)
 async def get_trips():
     try:
-        sql = 'SELECT trip.id, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id'
+        sql = 'SELECT trip.id, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id order by 1'
         cur.execute(sql)
         result = cur.fetchall()
         return {
@@ -150,7 +150,7 @@ async def get_trips():
 @router.get("/get-buses", response_model=BusResponse)
 async def get_buses():
     try:
-        sql = 'SELECT bus.id, bus.bus_name, bus_type.type_name, bus.bus_desc, bus.num_of_seat, bus.price_per_seat, bus.status FROM bus JOIN bus_type ON bus.type_id = bus_type.id'
+        sql = 'SELECT bus.id, bus.bus_name, bus_type.type_name, bus.bus_desc, bus.num_of_seat, bus.price_per_seat, bus.status FROM bus JOIN bus_type ON bus.type_id = bus_type.id order by 1'
         cur.execute(sql)
         result = cur.fetchall()
         return {
