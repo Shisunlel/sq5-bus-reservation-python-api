@@ -61,6 +61,7 @@ async def get_user(user_name: str):
         cur.execute(
             "SELECT first_name, last_name, phone, email, date_of_birth, user_name, user_pass, user_desc FROM users WHERE user_name = %s", (user_name,))
         result = cur.fetchone()
+        print(result, 'result')
         return {
             "data": result if cur.rowcount else None,
             "is_success": True,

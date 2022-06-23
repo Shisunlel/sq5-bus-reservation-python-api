@@ -44,7 +44,7 @@ class UsersResponseForDashboard(ApiResponse):
     data: list[UserModelForDashboard]
 
 class UserResponse(ApiResponse):
-    data: UserModel
+    data: Optional[UserModel]
 
 class LocationModel(BaseModel):
     loc_name: str
