@@ -18,7 +18,7 @@ cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 @router.get("/get-users", response_model=UsersResponse)
 async def get_all_user():
     try:
-        cur.execute("select * from users")
+        cur.execute("select * from users order by 1")
         result = cur.fetchall()
         return {
             "data": result,
@@ -31,7 +31,7 @@ async def get_all_user():
 @router.get("/get-users-for-dashboard", response_model=UsersResponseForDashboard)
 async def get_dashboard_users():
     try:
-        cur.execute("select * from users")
+        cur.execute("select * from users order by 1")
         result = cur.fetchall()
         return {
             "data": result,
@@ -44,7 +44,7 @@ async def get_dashboard_users():
 @router.get("/get-locations", response_model=LocationResponse)
 async def get_locations():
     try:
-        cur.execute("select loc_name from locations")
+        cur.execute("select loc_name from locations order by loc_id")
         result = cur.fetchall()
         return {
             "data": result,
