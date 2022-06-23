@@ -1,6 +1,7 @@
 from datetime import date
 from lib2to3.pytree import Base
 from re import I
+from turtle import st
 from typing import Optional
 from pydantic import BaseModel
 
@@ -27,12 +28,8 @@ class UserModel(BaseModel):
     email: str
     created_date: Optional[date]
     status: Optional[int]
-
-class UsersModelData(BaseModel):
-    users: list[UserModel]
-
 class UsersResponse(ApiResponse):
-    data: UsersModelData
+    data: list[UserModel]
 
 class UserModelForDashboard(BaseModel):
     user_id: Optional[int]
@@ -45,27 +42,20 @@ class UserModelForDashboard(BaseModel):
     phone: Optional[str]
     user_desc: Optional[str]
     status: Optional[int]
-class UsersModelDataForDashboard(BaseModel):
-    users: list[UserModelForDashboard]
 class UsersResponseForDashboard(ApiResponse):
-    data: UsersModelDataForDashboard
-
-class UserModelData(BaseModel):
-    user: UserModel
+    data: list[UserModelForDashboard]
 
 class UserResponse(ApiResponse):
-    data: UserModelData
+    data: UserModel
 
 class LocationModel(BaseModel):
     loc_name: str
 
-class LocationModelData(BaseModel):
-    locations: list[LocationModel]
-
 class LocationResponse(ApiResponse):
-    data: LocationModelData
+    data: list[LocationModel]
     
 class UpdateInfoRequest(BaseModel):
+    user_name: str
     first_name: str
     last_name: str
     phone: str
@@ -82,3 +72,29 @@ class UpdateBusRequest(BaseModel):
     bus_id: int
     price: float
     status: int
+
+class Bus(BaseModel):
+    id: int
+    bus_name: str
+    type_name: str
+    bus_desc: str
+    num_of_seat: int
+    price_per_seat: float
+    status: int
+
+class BusResponse(ApiResponse):
+    data: list[Bus]
+
+class Trip(BaseModel):
+    id: int
+    loc_name: str
+    price_per_seat: float
+    seat: int
+    departure_date: date
+
+class TripResponse(ApiResponse):
+    data: list[Trip]
+
+class UpdatePasswordRequest(BaseModel):
+    user_pass: str
+    user_name: str
