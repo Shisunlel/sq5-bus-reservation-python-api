@@ -1,7 +1,5 @@
 from datetime import date
 from lib2to3.pytree import Base
-from re import I
-from turtle import st
 from typing import Optional
 from pydantic import BaseModel
 
