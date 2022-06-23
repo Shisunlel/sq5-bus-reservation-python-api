@@ -97,7 +97,7 @@ async def update_password(req: UpdatePasswordRequest):
         is_success = True
         message = 'success'
         sql = "update users set user_pass = %s where user_name = %s"
-        data = [req.user_pass, req.user_name,]
+        data = [req.user_pass, req.user_name, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()
@@ -118,7 +118,7 @@ async def update_info(req: UpdateInfoRequest):
         is_success = True
         message = 'success'
         sql = "update users set first_name=%s, last_name=%s, phone=%s, email=%s, date_of_birth=%s where user_name = %s"
-        data = [req.first_name, req.last_name, req.phone, req.email, req.date_of_birth, req.user_name,]
+        data = [req.first_name, req.last_name, req.phone, req.email, req.date_of_birth, req.user_name, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()
@@ -167,7 +167,7 @@ async def add_bus(req: AddBusRequest):
         is_success = True
         message = 'success'
         sql = "INSERT INTO bus (bus_name, price_per_seat, type_id, created_date) VALUES (%s,%s,%s,%s)"
-        data = [req.name, req.price, req.type_id, req.created_date,]
+        data = [req.name, req.price, req.type_id, req.created_date, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()
@@ -188,7 +188,7 @@ async def update_bus(req: UpdateBusRequest):
         is_success = True
         message = 'success'
         sql = "UPDATE bus SET price_per_seat=%s, status=%s WHERE id=%s"
-        data = [req.price, req.status, req.bus_id,]
+        data = [req.price, req.status, req.bus_id, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()

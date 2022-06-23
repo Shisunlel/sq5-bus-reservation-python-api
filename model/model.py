@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from lib2to3.pytree import Base
 from typing import Optional
 from pydantic import BaseModel
@@ -64,7 +64,7 @@ class AddBusRequest(BaseModel):
     name: str
     price: float
     type_id: int
-    created_date: date
+    created_date: datetime
 
 class UpdateBusRequest(BaseModel):
     bus_id: int
@@ -75,7 +75,7 @@ class Bus(BaseModel):
     id: int
     bus_name: str
     type_name: str
-    bus_desc: str
+    bus_desc: Optional[str]
     num_of_seat: int
     price_per_seat: float
     status: int
