@@ -202,3 +202,45 @@ async def update_bus(req: UpdateBusRequest):
         }
     except Exception as e:
         print('ERR: ', e.args[0])
+
+@router.post("/update-user", response_model=ApiResponse)
+async def update_info(req: UpdateUserRequest):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "update users set user_pass= %s, phone=%s, email=%s, user_desc=%s where user_name = %s"
+        data = [req.user_pass, req.phone, req.email, req.user_desc, req.user_name, ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.post("/delete-user", response_model=ApiResponse)
+async def remove_user(req: DeleteUserRequest):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "DELETE FROM users where user_name = %s"
+        data = [req.user_name, ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])

@@ -96,3 +96,12 @@ class TripResponse(ApiResponse):
 class UpdatePasswordRequest(BaseModel):
     user_pass: str
     user_name: str
+class UpdateUserRequest(BaseModel):
+    user_name: str
+    user_pass: str
+    phone: str
+    email: str
+    user_desc: str
+
+class DeleteUserRequest(BaseModel):
+    user_name: str
