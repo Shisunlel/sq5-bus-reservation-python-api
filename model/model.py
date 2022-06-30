@@ -1,5 +1,4 @@
 from datetime import date, datetime, time
-from lib2to3.pytree import Base
 from typing import Optional
 from pydantic import BaseModel
 
@@ -47,11 +46,14 @@ class UserResponse(ApiResponse):
     data: Optional[UserModel]
 
 class LocationModel(BaseModel):
+    loc_id: int
     loc_name: str
 
-class LocationResponse(ApiResponse):
+class LocationsResponse(ApiResponse):
     data: list[LocationModel]
-    
+
+class LocationResponse(ApiResponse):
+    data: LocationModel
 class UpdateInfoRequest(BaseModel):
     user_name: str
     first_name: str
@@ -71,7 +73,7 @@ class UpdateBusRequest(BaseModel):
     price: float
     status: int
 
-class Bus(BaseModel):
+class BusWithType(BaseModel):
     id: int
     bus_name: str
     type_name: str
@@ -80,8 +82,19 @@ class Bus(BaseModel):
     price_per_seat: float
     status: int
 
+class BusesResponse(ApiResponse):
+    data: list[BusWithType]
+
+class Bus(BaseModel):
+    id: int
+    bus_name: str
+    bus_desc: Optional[str]
+    num_of_seat: int
+    price_per_seat: float
+    status: int
+
 class BusResponse(ApiResponse):
-    data: list[Bus]
+    data: Bus
 
 class Trip(BaseModel):
     id: int
@@ -92,9 +105,11 @@ class Trip(BaseModel):
     departure_date: date
     departure_time: time
 
-class TripResponse(ApiResponse):
+class TripsResponse(ApiResponse):
     data: list[Trip]
 
+class TripResponse(ApiResponse):
+    data: Trip
 class UpdatePasswordRequest(BaseModel):
     user_pass: str
     user_name: str
@@ -107,3 +122,14 @@ class UpdateUserRequest(BaseModel):
 
 class DeleteUserRequest(BaseModel):
     user_name: str
+
+class AddTripRequest(BaseModel):
+    loc_id: int
+    bus_id: int
+    departure_date: date
+    departure_time: time
+
+class UpdateTripRequest(BaseModel):
+    trip_id: int
+    departure_date: date
+    departure_time: time
