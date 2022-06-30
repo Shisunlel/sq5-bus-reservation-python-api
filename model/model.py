@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 from lib2to3.pytree import Base
 from typing import Optional
 from pydantic import BaseModel
@@ -85,10 +85,12 @@ class BusResponse(ApiResponse):
 
 class Trip(BaseModel):
     id: int
+    bus_name: str
     loc_name: str
     price_per_seat: float
     seat: int
     departure_date: date
+    departure_time: time
 
 class TripResponse(ApiResponse):
     data: list[Trip]
@@ -101,7 +103,7 @@ class UpdateUserRequest(BaseModel):
     user_pass: str
     phone: str
     email: str
-    user_desc: str
+    user_role: str
 
 class DeleteUserRequest(BaseModel):
     user_name: str

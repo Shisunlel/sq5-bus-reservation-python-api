@@ -59,7 +59,7 @@ async def get_locations():
 async def get_user(user_name: str):
     try:
         cur.execute(
-            "SELECT first_name, last_name, phone, email, date_of_birth, user_name, user_pass, user_desc FROM users WHERE user_name = %s", (user_name,))
+            "SELECT first_name, last_name, phone, email, date_of_birth, user_name, user_pass, role_name user_desc FROM users JOIN role ON users.role_id = role.id WHERE user_name = %s", (user_name,))
         result = cur.fetchone()
         print(result, 'result')
         return {
@@ -136,7 +136,7 @@ async def update_info(req: UpdateInfoRequest):
 @router.get("/get-trips", response_model=TripResponse)
 async def get_trips():
     try:
-        sql = 'SELECT trip.id, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id order by 1'
+        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date, trip.departure_time FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id order by 1'
         cur.execute(sql)
         result = cur.fetchall()
         return {
