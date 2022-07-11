@@ -174,3 +174,6 @@ class BookingDetail(BaseModel):
 
 class BookingDetailResponse(ApiResponse):
     data: BookingDetail
+
+class UpdateTransactionRequest(BaseModel):
+    booking_id: int

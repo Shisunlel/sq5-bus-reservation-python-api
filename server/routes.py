@@ -458,3 +458,38 @@ def get_bus_seat(booking_id: int):
         }
     except Exception as e:
         print('ERR: ', e.args[0])
+
+@router.post("/update-transaction", response_model=ApiResponse, tags=["Transaction"])
+def update_transaction(req: UpdateTransactionRequest):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "UPDATE booking, payment_offline SET booking.status= 1, payment_offline.status = 1 WHERE booking.id = %s AND payment_offline.booking_id = %s"
+        data = [req.booking_id, req.booking_id, ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-active-buses", response_model=BusesResponse, tags=["Bus"])
+def get_active_buses():
+    try:
+        sql = 'SELECT bus.id, bus.bus_name, bus_type.type_name, bus.bus_desc, bus.num_of_seat, bus.price, bus.status FROM bus JOIN bus_type ON bus.type_id = bus_type.id WHERE status = 1 order by 1'
+        cur.execute(sql)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
