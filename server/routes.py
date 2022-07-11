@@ -16,7 +16,7 @@ conn = connect(database=database, user=user, password=password, host=host)
 cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
 @router.get("/get-users", response_model=UsersResponse, tags=["User"])
-async def get_all_user():
+def get_all_user():
     try:
         cur.execute("select * from users order by 1")
         result = cur.fetchall()
@@ -29,7 +29,7 @@ async def get_all_user():
         print('ERR: ', e.args[0])
 
 @router.get("/get-users-for-dashboard", response_model=UsersResponseForDashboard, tags=["User"])
-async def get_dashboard_users():
+def get_dashboard_users():
     try:
         cur.execute("select * from users order by 1")
         result = cur.fetchall()
@@ -42,7 +42,7 @@ async def get_dashboard_users():
         print('ERR: ', e.args[0])
 
 @router.get("/get-locations", response_model=LocationsResponse, tags=["Location"])
-async def get_locations():
+def get_locations():
     try:
         cur.execute("select loc_id, loc_name from locations order by loc_id")
         result = cur.fetchall()
@@ -56,7 +56,7 @@ async def get_locations():
 
 
 @router.get("/get-user/{user_name}", response_model=UserResponse, tags=["User"])
-async def get_user(user_name: str):
+def get_user(user_name: str):
     try:
         cur.execute(
             "SELECT first_name, last_name, phone, email, date_of_birth, user_name, user_pass, role_name user_desc FROM users JOIN role ON users.role_id = role.id WHERE user_name = %s", (user_name,))
@@ -70,7 +70,7 @@ async def get_user(user_name: str):
 
 
 @router.post("/register", response_model=ApiResponse, tags=["User"])
-async def register(req: RegisterModel):
+def register(req: RegisterModel):
     try:
         is_success = True
         message = 'success'
@@ -91,7 +91,7 @@ async def register(req: RegisterModel):
         print('ERR: ', e.args[0])
 
 @router.post("/update-password", response_model=ApiResponse, tags=["User"])
-async def update_password(req: UpdatePasswordRequest):
+def update_password(req: UpdatePasswordRequest):
     try:
         is_success = True
         message = 'success'
@@ -112,7 +112,7 @@ async def update_password(req: UpdatePasswordRequest):
         print('ERR: ', e.args[0])
 
 @router.post("/update-info", response_model=ApiResponse, tags=["User"])
-async def update_info(req: UpdateInfoRequest):
+def update_info(req: UpdateInfoRequest):
     try:
         is_success = True
         message = 'success'
@@ -133,9 +133,23 @@ async def update_info(req: UpdateInfoRequest):
         print('ERR: ', e.args[0])
 
 @router.get("/get-trips", response_model=TripsResponse, tags=["Trip"])
-async def get_trips():
+def get_trips():
     try:
-        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date, trip.departure_time FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id order by 1'
+        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price, trip.seat, trip.departure_date, trip.departure_time, trip.status FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id order by 1'
+        cur.execute(sql)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-active-trips", response_model=TripsResponse, tags=["Trip"])
+def get_active_trips():
+    try:
+        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price, trip.seat, trip.departure_date, trip.departure_time, trip.status FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id WHERE trip.status = 1 order by 1'
         cur.execute(sql)
         result = cur.fetchall()
         return {
@@ -147,9 +161,9 @@ async def get_trips():
         print('ERR: ', e.args[0])
     
 @router.get("/get-trip-by-id/{trip_id}", response_model=TripResponse, tags=["Trip"])
-async def get_trip_by_id(trip_id: int):
+def get_trip_by_id(trip_id: int):
     try:
-        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date, trip.departure_time FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id where trip.id = %s order by 1'
+        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price, trip.seat, trip.departure_date, trip.departure_time, trip.status FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id where trip.id = %s order by 1'
         data = [trip_id, ]
         cur.execute(sql, data)
         result = cur.fetchone()
@@ -162,9 +176,9 @@ async def get_trip_by_id(trip_id: int):
         print('ERR: ', e.args[0])
 
 @router.get("/get-trips-by-loc-and-departure/{loc_id}/{date}", response_model=TripsResponse, tags=["Trip"])
-async def get_trips_by_loc_and_departure(loc_id: int, date: date):
+def get_trips_by_loc_and_departure(loc_id: int, date: date):
     try:
-        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price_per_seat, trip.seat, trip.departure_date, trip.departure_time FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id where trip.loc_id = %s and trip.departure_date = %s order by 1'
+        sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price, trip.seat, trip.departure_date, trip.departure_time FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id where trip.loc_id = %s and trip.departure_date = %s order by 1'
         data = [loc_id, date, ]
         cur.execute(sql, data)
         result = cur.fetchall()
@@ -177,9 +191,9 @@ async def get_trips_by_loc_and_departure(loc_id: int, date: date):
         print('ERR: ', e.args[0])
 
 @router.get("/get-buses", response_model=BusesResponse, tags=["Bus"])
-async def get_buses():
+def get_buses():
     try:
-        sql = 'SELECT bus.id, bus.bus_name, bus_type.type_name, bus.bus_desc, bus.num_of_seat, bus.price_per_seat, bus.status FROM bus JOIN bus_type ON bus.type_id = bus_type.id order by 1'
+        sql = 'SELECT bus.id, bus.bus_name, bus_type.type_name, bus.bus_desc, bus.num_of_seat, bus.price, bus.status FROM bus JOIN bus_type ON bus.type_id = bus_type.id order by 1'
         cur.execute(sql)
         result = cur.fetchall()
         return {
@@ -191,7 +205,7 @@ async def get_buses():
         print('ERR: ', e.args[0])
 
 @router.get("/get-bus-by-name/{bus_name}", response_model=BusResponse, tags=["Bus"])
-async def get_location_by_name(bus_name: str):
+def get_location_by_name(bus_name: str):
     try:
         sql = 'SELECT * FROM bus where bus_name = %s order by 1'
         data = [bus_name, ]
@@ -206,12 +220,12 @@ async def get_location_by_name(bus_name: str):
         print('ERR: ', e.args[0])
 
 @router.post("/add-bus", response_model=ApiResponse, tags=["Bus"])
-async def add_bus(req: AddBusRequest):
+def add_bus(req: AddBusRequest):
     try:
         is_success = True
         message = 'success'
-        sql = "INSERT INTO bus (bus_name, price_per_seat, type_id, created_date) VALUES (%s,%s,%s,%s)"
-        data = [req.name, req.price, req.type_id, req.created_date, ]
+        sql = "INSERT INTO bus (bus_name, price, type_id, loc_id, created_date) VALUES (%s,%s,%s,%s, %s)"
+        data = [req.name, req.price, req.type_id, req.loc_id, req.created_date, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()
@@ -227,11 +241,11 @@ async def add_bus(req: AddBusRequest):
         print('ERR: ', e.args[0])
 
 @router.post("/update-bus", response_model=ApiResponse, tags=["Bus"])
-async def update_bus(req: UpdateBusRequest):
+def update_bus(req: UpdateBusRequest):
     try:
         is_success = True
         message = 'success'
-        sql = "UPDATE bus SET price_per_seat=%s, status=%s WHERE id=%s"
+        sql = "UPDATE bus SET price=%s, status=%s WHERE id=%s"
         data = [req.price, req.status, req.bus_id, ]
         cur.execute(sql, data)
         if cur.rowcount:
@@ -248,7 +262,7 @@ async def update_bus(req: UpdateBusRequest):
         print('ERR: ', e.args[0])
 
 @router.post("/update-user", response_model=ApiResponse, tags=["User"])
-async def update_user(req: UpdateUserRequest):
+def update_user(req: UpdateUserRequest):
     try:
         is_success = True
         message = 'success'
@@ -273,7 +287,7 @@ async def update_user(req: UpdateUserRequest):
         print('ERR: ', e.args[0])
 
 @router.post("/delete-user", response_model=ApiResponse, tags=["User"])
-async def remove_user(req: DeleteUserRequest):
+def remove_user(req: DeleteUserRequest):
     try:
         is_success = True
         message = 'success'
@@ -294,7 +308,7 @@ async def remove_user(req: DeleteUserRequest):
         print('ERR: ', e.args[0])
 
 @router.get("/get-location-by-name/{loc_name}", response_model=LocationResponse, tags=["Location"])
-async def get_location_by_name(loc_name: str):
+def get_location_by_name(loc_name: str):
     try:
         sql = 'SELECT loc_id, loc_name FROM locations where loc_name = %s order by 1'
         data = [loc_name, ]
@@ -309,7 +323,7 @@ async def get_location_by_name(loc_name: str):
         print('ERR: ', e.args[0])
 
 @router.post("/add-trip", response_model=ApiResponse, tags=["Trip"])
-async def add_trip(req: AddTripRequest):
+def add_trip(req: AddTripRequest):
     try:
         is_success = True
         message = 'success'
@@ -330,7 +344,7 @@ async def add_trip(req: AddTripRequest):
         print('ERR: ', e.args[0])
 
 @router.post("/update-trip", response_model=ApiResponse, tags=["Trip"])
-async def update_trip(req: UpdateTripRequest):
+def update_trip(req: UpdateTripRequest):
     try:
         is_success = True
         message = 'success'
@@ -346,6 +360,101 @@ async def update_trip(req: UpdateTripRequest):
             "data": None,
             "is_success": is_success,
             "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.post("/end-trip", response_model=ApiResponse, tags=["Trip"])
+def end_trip(req: EndTripRequest):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "UPDATE trip, bus SET trip.status = 0, bus.status = 1 WHERE trip.id = %s AND trip.bus_id = bus.id"
+        data = [req.trip_id, ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-bookings", response_model=BookingsResponse, tags=["Booking"])
+def get_bookings():
+    try:
+        sql = 'SELECT * FROM booking order by 1'
+        cur.execute(sql)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-booking-by-id/{booking_id}", response_model=BookingResponse, tags=["Booking"])
+def get_booking_by_id(booking_id: int):
+    try:
+        sql = 'SELECT * FROM booking WHERE id = %s order by 1'
+        data = [booking_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchone()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-bus-seat-from-booking/{booking_id}", response_model=BusSeatsResponse, tags=["BusSeat"])
+def get_bus_seat(booking_id: int):
+    try:
+        sql = 'SELECT * FROM bus_seat WHERE id IN (SELECT seat_id FROM booking_detail WHERE booking_id = %s) order by 1'
+        data = [booking_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-trip-id-from-booking/{booking_id}", response_model=BookingDetailResponse, tags=["BookingDetail"])
+def get_bus_seat(booking_id: int):
+    try:
+        sql = 'SELECT DISTINCT * FROM booking_detail WHERE booking_id = %s order by 1'
+        data = [booking_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchone()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-user-from-booking/{booking_id}", response_model=UserResponse, tags=["User"])
+def get_bus_seat(booking_id: int):
+    try:
+        sql = 'SELECT users.user_name FROM booking JOIN users ON booking.user_id = users.user_id WHERE booking.id = %s order by 1'
+        data = [booking_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchone()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
         }
     except Exception as e:
         print('ERR: ', e.args[0])

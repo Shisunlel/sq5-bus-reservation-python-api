@@ -1,4 +1,5 @@
 from datetime import date, datetime, time
+from optparse import Option
 from typing import Optional
 from pydantic import BaseModel
 
@@ -66,6 +67,7 @@ class AddBusRequest(BaseModel):
     name: str
     price: float
     type_id: int
+    loc_id: int
     created_date: datetime
 
 class UpdateBusRequest(BaseModel):
@@ -79,7 +81,7 @@ class BusWithType(BaseModel):
     type_name: str
     bus_desc: Optional[str]
     num_of_seat: int
-    price_per_seat: float
+    price: float
     status: int
 
 class BusesResponse(ApiResponse):
@@ -90,7 +92,7 @@ class Bus(BaseModel):
     bus_name: str
     bus_desc: Optional[str]
     num_of_seat: int
-    price_per_seat: float
+    price: float
     status: int
 
 class BusResponse(ApiResponse):
@@ -100,10 +102,11 @@ class Trip(BaseModel):
     id: int
     bus_name: str
     loc_name: str
-    price_per_seat: float
+    price: float
     seat: int
     departure_date: date
     departure_time: time
+    status: int
 
 class TripsResponse(ApiResponse):
     data: list[Trip]
@@ -133,3 +136,41 @@ class UpdateTripRequest(BaseModel):
     trip_id: int
     departure_date: date
     departure_time: time
+
+class EndTripRequest(BaseModel):
+    trip_id: int
+
+class Booking(BaseModel):
+    id: int
+    user_id: int
+    description: Optional[str]
+    payment: float
+    booking_date: date
+    status: int
+
+class BookingsResponse(ApiResponse):
+    data: list[Booking]
+
+class BookingResponse(ApiResponse):
+    data: Booking
+
+class BusSeat(BaseModel):
+    id: int
+    bus_id: int
+    seat_name: str
+    seat_desc: Optional[str]
+    status: int
+
+class BusSeatsResponse(ApiResponse):
+    data: list[BusSeat]
+
+class BookingDetail(BaseModel):
+    id: int
+    booking_id: int
+    trip_id: int
+    description: Optional[str]
+    seat_id: int
+    price: float
+
+class BookingDetailResponse(ApiResponse):
+    data: BookingDetail
