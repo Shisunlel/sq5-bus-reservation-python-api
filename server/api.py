@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import router
+from .routers import routes, users, bookings, buses, locations, trips
 
 
 app = FastAPI()
@@ -12,4 +12,9 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*']
 )
-app.include_router(router, prefix="/api/v1")
+app.include_router(users.router, prefix="/api/v1")
+app.include_router(bookings.router, prefix="/api/v1")
+app.include_router(buses.router, prefix="/api/v1")
+app.include_router(locations.router, prefix="/api/v1")
+app.include_router(trips.router, prefix="/api/v1")
+app.include_router(routes.router, prefix="/api/v1")
