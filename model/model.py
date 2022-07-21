@@ -1,4 +1,5 @@
 from datetime import date, datetime, time
+from optparse import Option
 from typing import Optional
 from pydantic import BaseModel
 
@@ -16,6 +17,9 @@ class BusSeat(BaseModel):
 
 class BusSeatsResponse(ApiResponse):
     data: list[BusSeat]
+
+class BusSeatIdResponse(ApiResponse):
+    data: Optional[int]
 
 class BookingDetail(BaseModel):
     id: int
@@ -36,3 +40,18 @@ class BookingDetailTripResponse(ApiResponse):
 
 class UpdateTransactionRequest(BaseModel):
     booking_id: int
+
+class AddBookingDetailRequest(BaseModel):
+    booking_id: int
+    trip_id: int
+    seat_id: int
+    price: float
+
+class UpdateBusSeat(BaseModel):
+    seat_id: int
+    status: int
+
+class AddOnlinePaymentRequest(BaseModel):
+    booking_id: int
+    pay_date: date
+    cus_id: int

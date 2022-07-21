@@ -1,3 +1,4 @@
+from typing import NewType
 from ..conn import *
 from fastapi import APIRouter
 from model.trip import *
@@ -111,6 +112,28 @@ def end_trip(req: EndTripRequest):
         message = 'success'
         sql = "UPDATE trip, bus SET trip.status = 0, bus.status = 1 WHERE trip.id = %s AND trip.bus_id = bus.id"
         data = [req.trip_id, ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+trip_id = NewType('trip_id',int)
+@router.post("/update-trip-available-seat", response_model=ApiResponse, tags=["Trip"])
+def update_trip_available_seat(trip_id: trip_id):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "UPDATE trip SET seat = seat - 1 WHERE id = %s"
+        data = [trip_id, ]
         cur.execute(sql, data)
         if cur.rowcount:
             conn.commit()

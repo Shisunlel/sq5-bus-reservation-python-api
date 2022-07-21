@@ -26,3 +26,15 @@ class UsersBookingResponse(ApiResponse):
 
 class UserBookingResponse(ApiResponse):
     data: UserBooking
+
+class AddBookingRequest(BaseModel):
+    user_id: int
+    payment: float
+    booking_date: date
+
+class AddBookingResponse(ApiResponse):
+    data: int
+
+class UpdateBookingStatus(BaseModel):
+    status: int
+    booking_id: int
