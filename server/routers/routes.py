@@ -131,3 +131,39 @@ def online_payment(req: AddOnlinePaymentRequest):
         }
     except Exception as e:
         print('ERR: ', e.args[0])
+
+@router.post("/offline-payment", response_model=ApiResponse, tags=["Transaction"])
+def offline_payment(req: AddOfflinePaymentRequest):
+    try:
+        is_success = True
+        message = 'success'
+        sql = "INSERT INTO payment_offline (booking_id, booking_date, cus_id) VALUES (%s, %s, %s)"
+        data = [req.booking_id, req.booking_date, req.cus_id ]
+        cur.execute(sql, data)
+        if cur.rowcount:
+            conn.commit()
+        else:
+            is_success = False
+            message = 'fail'
+        return {
+            "data": None,
+            "is_success": is_success,
+            "message": message
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
+
+@router.get("/get-bus-seat-from-trip/{trip_id}", response_model=BusSeatsResponse, tags=["BusSeat"])
+def get_bus_seat(trip_id: int):
+    try:
+        sql = 'SELECT * FROM bus_seat WHERE bus_id IN (SELECT bus_id FROM trip WHERE id=%s) order by 1'
+        data = [trip_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])

@@ -55,3 +55,8 @@ class AddOnlinePaymentRequest(BaseModel):
     booking_id: int
     pay_date: date
     cus_id: int
+
+class AddOfflinePaymentRequest(BaseModel):
+    booking_id: int
+    booking_date: date
+    cus_id: int
