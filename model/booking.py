@@ -1,5 +1,4 @@
 from datetime import date, datetime, time
-from turtle import st
 from typing import Optional
 from pydantic import BaseModel
 from .model import ApiResponse
