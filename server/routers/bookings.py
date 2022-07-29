@@ -1,4 +1,3 @@
-from typing import NewType
 from ..conn import *
 from fastapi import APIRouter
 from model.booking import *
