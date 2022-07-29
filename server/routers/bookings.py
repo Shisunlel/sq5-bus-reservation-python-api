@@ -70,6 +70,52 @@ def get_bus_seat(user_id: int):
         data = [user_id, ]
         cur.execute(sql, data)
         result = cur.fetchall()
+        if not result:
+            return {
+                "data": None,
+                "status": True,
+                "message": "Not Found!"
+            }
+        else:
+            res = list()
+            booking = list()
+
+            for x in result:
+                booking.append(x)
+
+            for x in booking:
+                seat = list()
+                sql = 'SELECT * FROM bus_seat WHERE id IN (SELECT seat_id FROM booking_detail WHERE booking_id = %s) order by 1'
+                data = [x['id'], ]
+                cur.execute(sql, data)
+                result = cur.fetchall()
+
+                for y in result:
+                    seat.append(y['seat_name'])
+                sql = 'SELECT DISTINCT trip_id FROM booking_detail WHERE booking_id = %s order by 1'
+                data = [x['id'], ]
+                cur.execute(sql, data)
+
+                trip = cur.fetchone()
+
+                sql = 'SELECT trip.id, bus.bus_name, locations.loc_name, bus.price, trip.seat, trip.departure_date, trip.departure_time, trip.status FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id where trip.id = %s order by 1'
+                data = [trip['trip_id'], ]
+                cur.execute(sql, data)
+                booking_detail = cur.fetchone()
+
+                res.append(
+                    {
+                        "booking_id": str(x['id']),
+                        "trip_id": str(trip['trip_id']),
+                        "destination": booking_detail['loc_name'],
+                        "booking_date": str(x['booking_date']),
+                        "price": str(x['payment']),
+                        "bus_name": booking_detail['bus_name'],
+                        "seat": ",".join(seat),
+                        "paid_status": "Paid" if x['status'] == 1 else "Not Paid",
+                    }
+                )
+            result = res
         return {
             "data": result,
             "is_success": True,

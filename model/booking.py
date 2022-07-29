@@ -1,15 +1,18 @@
 from datetime import date, datetime, time
+from turtle import st
 from typing import Optional
 from pydantic import BaseModel
 from .model import ApiResponse
 
 class Booking(BaseModel):
-    id: int
-    user_id: int
-    description: Optional[str]
-    payment: float
-    booking_date: date
-    status: int
+    booking_id: str
+    trip_id: str
+    destination: str
+    booking_date: str
+    price: str
+    bus_name: str
+    seat: str
+    paid_status: str
 
 class BookingsResponse(ApiResponse):
     data: list[Booking]
