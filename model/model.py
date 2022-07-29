@@ -60,3 +60,16 @@ class AddOfflinePaymentRequest(BaseModel):
     booking_id: int
     booking_date: date
     cus_id: int
+
+class GetTransactionDetailRequest(BaseModel):
+    booking_id: int
+    trip_id: int
+
+class TransactionDetail(BaseModel):
+    username: str
+    destination: str
+    departure_date: str
+    unit_price: str
+
+class GetTransactionDetailResponse(ApiResponse):
+    data: TransactionDetail

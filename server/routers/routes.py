@@ -167,3 +167,35 @@ def get_bus_seat(trip_id: int):
         }
     except Exception as e:
         print('ERR: ', e.args[0])
+
+@router.post("/show-transaction-detail", response_model=GetTransactionDetailResponse, tags=["Transaction"])
+def show_transaction_detail(req: GetTransactionDetailRequest):
+    try:
+        sql = 'SELECT users.user_name FROM booking JOIN users ON booking.user_id = users.user_id WHERE booking.id = %s'
+        values = [req.booking_id, ]
+        cur.execute(sql, values)
+        user = cur.fetchone()
+
+        sql = 'SELECT locations.loc_name, trip.departure_date, trip.departure_time, bus.price FROM trip JOIN locations ON trip.loc_id = locations.loc_id JOIN bus ON trip.bus_id = bus.id WHERE trip.id = %s'
+        values = [req.trip_id, ]
+        cur.execute(sql, values)
+        result = cur.fetchall()
+        for x in result:
+            destination = x['loc_name']
+            departure_date = f"{x['departure_date']} {x['departure_time']}"
+            unit_price = f"{x['price']}"
+        
+        data = {
+            "username": user['user_name'],
+            "destination": destination,
+            "departure_date": str(departure_date),
+            "unit_price": str(unit_price),
+        }
+
+        return {
+            "data": data,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
