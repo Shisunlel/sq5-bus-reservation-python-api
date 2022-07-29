@@ -3,20 +3,20 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-# @router.get("/get-bus-seat-from-booking/{booking_id}", response_model=BusSeatsResponse, tags=["BusSeat"])
-# def get_bus_seat(booking_id: int):
-#     try:
-#         sql = 'SELECT * FROM bus_seat WHERE id IN (SELECT seat_id FROM booking_detail WHERE booking_id = %s) order by 1'
-#         data = [booking_id, ]
-#         cur.execute(sql, data)
-#         result = cur.fetchall()
-#         return {
-#             "data": result,
-#             "is_success": True,
-#             "message": "success"
-#         }
-#     except Exception as e:
-#         print('ERR: ', e.args[0])
+@router.get("/get-bus-seat-from-booking/{booking_id}", response_model=BusSeatsResponse, tags=["BusSeat"])
+def get_bus_seat(booking_id: int):
+    try:
+        sql = 'SELECT * FROM bus_seat WHERE id IN (SELECT seat_id FROM booking_detail WHERE booking_id = %s) order by 1'
+        data = [booking_id, ]
+        cur.execute(sql, data)
+        result = cur.fetchall()
+        return {
+            "data": result,
+            "is_success": True,
+            "message": "success"
+        }
+    except Exception as e:
+        print('ERR: ', e.args[0])
 
 @router.get("/get-bus-seat-id-by-trip/{seat_name}/{trip}", response_model=BusSeatIdResponse, tags=["BusSeat"])
 def get_bus_seat(seat_name: int, trip: int):
