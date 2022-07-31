@@ -65,9 +65,13 @@ def get_user_booking(booking_id: int):
 @router.get("/get-user-booking/{user_id}", response_model=BookingsResponse, tags=["Booking"])
 def get_bus_seat(user_id: int):
     try:
-        sql = 'SELECT * FROM booking WHERE user_id = %s ORDER BY booking_date DESC'
-        data = [user_id, ]
-        cur.execute(sql, data)
+        if user_id > 0:
+            sql = 'SELECT * FROM booking WHERE user_id = %s ORDER BY booking_date DESC'
+            data = [user_id, ]
+            cur.execute(sql, data)
+        else:
+            sql = 'SELECT * FROM booking ORDER by booking_date DESC'
+            cur.execute(sql)
         result = cur.fetchall()
         if not result:
             return {
